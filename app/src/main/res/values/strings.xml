@@ -4,6 +4,7 @@
     <string name="from">Откуда</string>
     <string name="to">Куда</string>
     <string name="search">Поиск</string>
+    <string name="select_date">Выбрать дату</string>
     <string name="about">О нас</string>
     <string name="account">Личный кабинет</string>
     <!-- TODO: Remove or change this placeholder text -->
