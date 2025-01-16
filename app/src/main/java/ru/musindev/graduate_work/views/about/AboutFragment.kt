@@ -2,15 +2,12 @@ package ru.musindev.graduate_work.views.about
 
 import android.content.Context
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.Fragment
 import dagger.android.support.AndroidSupportInjection
-import ru.musindev.graduate_work.R
 import ru.musindev.graduate_work.databinding.FragmentAboutBinding
-import ru.musindev.graduate_work.databinding.FragmentSearchBinding
-import ru.musindev.graduate_work.views.search.SearchViewModel
 
 class AboutFragment : Fragment() {
 
