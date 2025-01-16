@@ -1,3 +1,11 @@
 <resources>
     <string name="app_name">Graduate-Work</string>
+    <string name="bus_schedules">Расписание автобусов</string>
+    <string name="from">Откуда</string>
+    <string name="to">Куда</string>
+    <string name="search">Поиск</string>
+    <string name="about">О нас</string>
+    <string name="account">Личный кабинет</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>
