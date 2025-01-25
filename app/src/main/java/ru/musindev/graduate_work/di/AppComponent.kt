@@ -7,6 +7,8 @@ import dagger.android.AndroidInjector
 import dagger.android.support.AndroidSupportInjectionModule
 import ru.musindev.graduate_work.App
 import ru.musindev.graduate_work.di.modules.MainModule
+import ru.musindev.graduate_work.di.modules.NetworkModule
+import ru.musindev.graduate_work.di.modules.ViewModelModule
 import javax.inject.Singleton
 
 @Singleton
@@ -14,6 +16,8 @@ import javax.inject.Singleton
     modules = [
         AndroidSupportInjectionModule::class,
         MainModule::class,
+        ViewModelModule::class,
+        NetworkModule::class,
     ]
 )
 
