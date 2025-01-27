@@ -7,6 +7,5 @@ import androidx.room.PrimaryKey
 data class SearchRequest(
     @PrimaryKey(autoGenerate = true) val id: Int = 0,
     val cityFrom: String,
-    val cityTo: String,
-    val date: String
+    val cityTo: String
 )

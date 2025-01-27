@@ -9,7 +9,11 @@
         android:id="@+id/searchFragment"
         android:name="ru.musindev.graduate_work.views.search.SearchFragment"
         android:label="fragment_search"
-        tools:layout="@layout/fragment_search" />
+        tools:layout="@layout/fragment_search" >
+        <action
+            android:id="@+id/action_searchFragment_to_calendarDialogFragment"
+            app:destination="@id/calendarDialogFragment" />
+    </fragment>
     <fragment
         android:id="@+id/aboutFragment"
         android:name="ru.musindev.graduate_work.views.about.AboutFragment"
@@ -20,4 +24,8 @@
         android:name="ru.musindev.graduate_work.views.account.AccountFragment"
         android:label="fragment_account"
         tools:layout="@layout/fragment_account" />
+    <dialog
+        android:id="@+id/calendarDialogFragment"
+        android:name="ru.musindev.graduate_work.views.calendar.CalendarDialogFragment"
+        android:label="CalendarDialogFragment" />
 </navigation>
