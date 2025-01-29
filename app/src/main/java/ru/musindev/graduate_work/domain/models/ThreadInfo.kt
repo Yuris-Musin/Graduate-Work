@@ -1,4 +1,4 @@
-package ru.musindev.graduate_work.di.api.models
+package ru.musindev.graduate_work.domain.models
 
 data class ThreadInfo(
     val title: String,

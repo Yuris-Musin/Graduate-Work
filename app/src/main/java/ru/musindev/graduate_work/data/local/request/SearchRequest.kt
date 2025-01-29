@@ -1,4 +1,4 @@
-package ru.musindev.graduate_work.di.db
+package ru.musindev.graduate_work.data.local.request
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey

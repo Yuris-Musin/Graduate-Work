@@ -10,6 +10,8 @@ import android.widget.AutoCompleteTextView
 import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import dagger.android.support.AndroidSupportInjection
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -19,11 +21,11 @@ import okhttp3.Request
 import org.json.JSONArray
 import ru.musindev.graduate_work.API
 import ru.musindev.graduate_work.databinding.FragmentSearchBinding
-import ru.musindev.graduate_work.di.db.AppDatabase
-import ru.musindev.graduate_work.di.db.SearchRequest
+import ru.musindev.graduate_work.data.local.db.AppDatabase
+import ru.musindev.graduate_work.data.local.request.SearchRequest
+import ru.musindev.graduate_work.views.adapters.ScheduleAdapter
 import ru.musindev.graduate_work.views.calendar.CalendarDialogFragment
 import java.text.SimpleDateFormat
-import java.util.Date
 import java.util.Locale
 import javax.inject.Inject
 
@@ -38,6 +40,8 @@ class SearchFragment : Fragment() {
     lateinit var viewModelFactory: ViewModelProvider.Factory
     private lateinit var database: AppDatabase
     private lateinit var viewModel: SearchViewModel
+    private lateinit var scheduleAdapter: ScheduleAdapter
+    private lateinit var recyclerView: RecyclerView
 
     override fun onAttach(context: Context) {
         AndroidSupportInjection.inject(this)
@@ -72,6 +76,12 @@ class SearchFragment : Fragment() {
         observeViewModel()
 
         binding.btnSearch.setOnClickListener { onSearchClick() }
+
+        // Инициализация RecyclerView
+        recyclerView = binding.rcSchedule
+        scheduleAdapter = ScheduleAdapter()
+        recyclerView.adapter = scheduleAdapter
+        recyclerView.layoutManager = LinearLayoutManager(requireContext())
     }
 
     private fun setupAutoComplete(field: AutoCompleteTextView, adapter: ArrayAdapter<String>) {
@@ -100,17 +110,11 @@ class SearchFragment : Fragment() {
 
     private fun observeViewModel() {
         viewModel.schedule.observe(viewLifecycleOwner) { segments ->
-            binding.tvResult.text = if (segments.isEmpty()) {
-                "Ничего не найдено"
+            if (segments.isEmpty()) {
+                binding.tvResult.text = "Ничего не найдено"
             } else {
-                segments.joinToString("\n") { segment ->
-                    """
-                    Отправление: ${segment.departure}
-                    Прибытие: ${segment.arrival}
-                    Маршрут: ${segment.thread.title}
-                    
-                    """.trimIndent()
-                }
+                scheduleAdapter.setSegments(segments) // Используйте адаптер для отображения данных
+                binding.tvResult.text = ""
             }
         }
 

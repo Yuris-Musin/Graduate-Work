@@ -1,4 +1,4 @@
-package ru.musindev.graduate_work.views.search
+package ru.musindev.graduate_work.views.adapters
 
 import android.content.Context
 import android.view.LayoutInflater

@@ -8,7 +8,7 @@ import android.view.WindowManager
 import androidx.fragment.app.DialogFragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import ru.musindev.graduate_work.databinding.DialogCalendarBinding
-import ru.musindev.graduate_work.views.search.MonthAdapter
+import ru.musindev.graduate_work.views.adapters.MonthAdapter
 import java.util.*
 
 class CalendarDialogFragment(
