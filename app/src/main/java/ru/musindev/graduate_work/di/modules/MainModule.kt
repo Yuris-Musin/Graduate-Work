@@ -6,6 +6,7 @@ import ru.musindev.graduate_work.views.about.AboutFragment
 import ru.musindev.graduate_work.views.account.AccountFragment
 import ru.musindev.graduate_work.views.calendar.CalendarDialogFragment
 import ru.musindev.graduate_work.views.search.SearchFragment
+import ru.musindev.graduate_work.views.schedule_list.ScheduleListFragment
 
 @Module
 interface MainModule {
@@ -21,5 +22,8 @@ interface MainModule {
 
     @ContributesAndroidInjector
     fun bindCalendarDialogFragment(): CalendarDialogFragment
+
+    @ContributesAndroidInjector
+    fun bindScheduleListFragment(): ScheduleListFragment
 
 }

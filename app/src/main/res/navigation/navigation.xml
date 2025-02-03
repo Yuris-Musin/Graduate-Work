@@ -13,6 +13,9 @@
         <action
             android:id="@+id/action_searchFragment_to_calendarDialogFragment"
             app:destination="@id/calendarDialogFragment" />
+        <action
+            android:id="@+id/action_searchFragment_to_scheduleListFragment"
+            app:destination="@id/scheduleListFragment" />
     </fragment>
     <fragment
         android:id="@+id/aboutFragment"
@@ -28,4 +31,9 @@
         android:id="@+id/calendarDialogFragment"
         android:name="ru.musindev.graduate_work.views.calendar.CalendarDialogFragment"
         android:label="CalendarDialogFragment" />
+    <fragment
+        android:id="@+id/scheduleListFragment"
+        android:name="ru.musindev.graduate_work.views.schedule_list.ScheduleListFragment"
+        android:label="fragment_schedule_list"
+        tools:layout="@layout/fragment_schedule_list" />
 </navigation>

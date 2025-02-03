@@ -7,11 +7,13 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import android.widget.AutoCompleteTextView
+import androidx.core.os.bundleOf
 import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
+import androidx.lifecycle.lifecycleScope
+import androidx.navigation.NavOptions
+import androidx.navigation.fragment.findNavController
 import dagger.android.support.AndroidSupportInjection
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -19,11 +21,10 @@ import kotlinx.coroutines.launch
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import org.json.JSONArray
-import ru.musindev.graduate_work.API
-import ru.musindev.graduate_work.databinding.FragmentSearchBinding
+import ru.musindev.graduate_work.R
 import ru.musindev.graduate_work.data.local.db.AppDatabase
 import ru.musindev.graduate_work.data.local.request.SearchRequest
-import ru.musindev.graduate_work.views.adapters.ScheduleAdapter
+import ru.musindev.graduate_work.databinding.FragmentSearchBinding
 import ru.musindev.graduate_work.views.calendar.CalendarDialogFragment
 import java.text.SimpleDateFormat
 import java.util.Locale
@@ -33,15 +34,12 @@ class SearchFragment : Fragment() {
 
     private var _binding: FragmentSearchBinding? = null
     private val binding get() = _binding!!
-    private val apiKey = API.KEY
     private val client = OkHttpClient()
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
     private lateinit var database: AppDatabase
     private lateinit var viewModel: SearchViewModel
-    private lateinit var scheduleAdapter: ScheduleAdapter
-    private lateinit var recyclerView: RecyclerView
 
     override fun onAttach(context: Context) {
         AndroidSupportInjection.inject(this)
@@ -71,17 +69,12 @@ class SearchFragment : Fragment() {
 
         binding.btnDate.setOnClickListener { showDatePicker() }
 
-        viewModel = ViewModelProvider(this, viewModelFactory).get(SearchViewModel::class.java)
+        viewModel = ViewModelProvider(requireActivity(), viewModelFactory).get(SearchViewModel::class.java)
 
         observeViewModel()
 
         binding.btnSearch.setOnClickListener { onSearchClick() }
 
-        // Инициализация RecyclerView
-        recyclerView = binding.rcSchedule
-        scheduleAdapter = ScheduleAdapter()
-        recyclerView.adapter = scheduleAdapter
-        recyclerView.layoutManager = LinearLayoutManager(requireContext())
     }
 
     private fun setupAutoComplete(field: AutoCompleteTextView, adapter: ArrayAdapter<String>) {
@@ -109,17 +102,24 @@ class SearchFragment : Fragment() {
     }
 
     private fun observeViewModel() {
-        viewModel.schedule.observe(viewLifecycleOwner) { segments ->
-            if (segments.isEmpty()) {
-                binding.tvResult.text = "Ничего не найдено"
-            } else {
-                scheduleAdapter.setSegments(segments) // Используйте адаптер для отображения данных
-                binding.tvResult.text = ""
+        // Наблюдение за schedule
+        lifecycleScope.launch {
+            viewModel.schedule.collect { segments ->
+                if (segments.isEmpty()) {
+                    binding.tvResult.text = "Ничего не найдено"
+                } else {
+                    binding.tvResult.text = ""
+                }
             }
         }
 
-        viewModel.error.observe(viewLifecycleOwner) { errorMessage ->
-            binding.tvResult.text = "Ошибка: $errorMessage"
+        // Наблюдение за error
+        lifecycleScope.launch {
+            viewModel.error.collect { errorMessage ->
+                errorMessage?.let {
+                    binding.tvResult.text = "Ошибка: $it"
+                }
+            }
         }
     }
 
@@ -143,8 +143,16 @@ class SearchFragment : Fragment() {
         fetchCityCode(cityFrom) { fromCode ->
             fetchCityCode(cityTo) { toCode ->
                 if (fromCode != null && toCode != null) {
-                    viewModel.fetchSchedule(apiKey, fromCode, toCode, selectedDate)
+                    //viewModel.fetchSchedule(apiKey, fromCode, toCode, selectedDate)
                     cacheRequest(cityFrom, cityTo)
+
+                    val bundle = bundleOf(
+                        "cityFrom" to fromCode,
+                        "cityTo" to toCode,
+                        "selectDate" to selectedDate
+                    )
+                    // Переход к ScheduleListFragment
+                    findNavController().navigate(R.id.action_searchFragment_to_scheduleListFragment, bundle)
                 } else {
                     binding.tvResult.text = "Код города не найден"
                 }
