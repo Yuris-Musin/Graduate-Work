@@ -1,7 +1,20 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
     <!-- Base application theme. -->
     <style name="Base.Theme.GraduateWork" parent="Theme.Material3.DayNight.NoActionBar">
-        <!-- Customize your dark theme here. -->
-        <!-- <item name="colorPrimary">@color/my_dark_primary</item> -->
+        <!-- Customize your light theme here. -->
+        <!-- <item name="colorPrimary">@color/my_light_primary</item> -->
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimary</item>
+        <item name="colorAccent">@color/colorAccent</item>
+        <item name="android:textColor">@color/textColor</item>
+        <item name="android:background">@color/backgroundColor</item>
+
+        <!-- главный цвет фона для приложения -->
+        <item name="android:windowBackground">@color/backgroundColor</item>
+
+        <item name="android:fontFamily">@font/pt_sans_regular</item>
+
+        <!--         Status bar color.-->
+        <item name="android:statusBarColor">#2E303D</item>
     </style>
 </resources>

@@ -12,7 +12,7 @@
         android:title="@string/about"
         app:showAsAction="withText" />
     <item
-        android:id="@+id/account"
+        android:id="@+id/settings"
         android:icon="@drawable/baseline_settings_24"
         android:title="@string/settings"
         app:showAsAction="withText" />

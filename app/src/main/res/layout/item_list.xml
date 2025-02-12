@@ -5,8 +5,8 @@
     style="?android:attr/dropDownItemStyle"
     android:textAppearance="?android:attr/textAppearanceLargePopupMenu"
     android:singleLine="true"
-    android:background="@color/color_3"
-    android:textColor="@color/shadow"
+    android:background="@color/backgroundColor"
+    android:textColor="@color/textColor"
     android:layout_width="match_parent"
     android:layout_height="?android:attr/listPreferredItemHeight"
     android:ellipsize="marquee" />
