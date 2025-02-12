@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.view.isGone
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
@@ -55,15 +56,42 @@ class ScheduleListFragment : Fragment() {
         val selectedDate = arguments?.getString("selectDate").toString()
 
         // Инициализация ViewModel
-        viewModel = ViewModelProvider(requireActivity(), viewModelFactory).get(SearchViewModel::class.java)
+        viewModel = ViewModelProvider(requireActivity(), viewModelFactory)[SearchViewModel::class.java]
 
-        lifecycleScope.launch {
+        // Наблюдение за schedule
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewModel.schedule.collect { segments ->
+                if (segments.isEmpty()) {
+                    binding.tvResult.text = "Маршруты не найдены"
+                } else {
+                    binding.tvResult.text = ""
+                }
+            }
+        }
+
+        // Наблюдение за error
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewModel.error.collect { errorMessage ->
+                errorMessage?.let {
+                    binding.tvResult.text = "Ошибка: $it"
+                }
+            }
+        }
+
+        viewLifecycleOwner.lifecycleScope.launch {
             viewModel.fetchSchedule(API.KEY, cityFrom, cityTo, selectedDate)
         }
+
         // Подписка на изменения данных
-        lifecycleScope.launch {
+        viewLifecycleOwner.lifecycleScope.launch {
             viewModel.schedule.collect { segments ->
                 scheduleAdapter.setSegments(segments)
+            }
+        }
+
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewModel.isLoading.collect {
+                binding.loadingLayout.root.isGone = !it
             }
         }
     }

@@ -6,6 +6,9 @@
     <string name="search">Поиск</string>
     <string name="select_date">Выбрать дату</string>
     <string name="about">О нас</string>
+    <string name="about_text">Данные предоставлены сервисом Яндекс Расписания:</string>
+    <string name="about_link">https://yandex.ru/dev/rasp/doc/ru/</string>
+    <string name="settings">Настройки</string>
     <string name="account">Личный кабинет</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>

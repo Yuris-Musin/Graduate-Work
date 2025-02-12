@@ -6,14 +6,40 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".views.schedule_list.ScheduleListFragment">
 
+    <TextView
+        android:id="@+id/tv_result"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="30dp"
+        android:textSize="16sp"
+        android:text="@string/settings"
+        android:textColor="@color/shadow"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        />
+
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rc_schedule"
         android:layout_width="0dp"
         android:layout_height="0dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="8dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         tools:listitem="@layout/item_schedule" />
+
+    <include
+        android:id="@+id/loading_layout"
+        layout="@layout/loading_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
