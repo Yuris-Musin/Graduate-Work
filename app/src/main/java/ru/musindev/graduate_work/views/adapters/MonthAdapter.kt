@@ -1,24 +1,34 @@
 package ru.musindev.graduate_work.views.adapters
 
 import android.content.Context
+import android.graphics.Color
+import android.os.Build
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.GridLayout
 import android.widget.TextView
+import androidx.annotation.RequiresApi
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
+import ru.musindev.graduate_work.R
 import ru.musindev.graduate_work.databinding.ItemMonthBinding
-import java.text.SimpleDateFormat
+import java.time.LocalDate
+import java.time.format.DateTimeFormatter
 import java.util.Calendar
 import java.util.Date
 import java.util.Locale
 
+@RequiresApi(Build.VERSION_CODES.O)
 class MonthAdapter(
     private val context: Context,
-    private val startDate: Calendar, // Текущая дата
-    private val monthsToShow: Int,   // Количество месяцев
+    private val startDate: Calendar,
+    private val monthsToShow: Int,
     private val onDateSelected: (Date) -> Unit
 ) : RecyclerView.Adapter<MonthAdapter.MonthViewHolder>() {
+
+    private var selectedDate: Calendar? = null  // Храним выбранную дату в Calendar для сравнения
+    private var todayDate: Calendar = Calendar.getInstance()  // Для текущей даты
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MonthViewHolder {
         val binding = ItemMonthBinding.inflate(LayoutInflater.from(context), parent, false)
@@ -30,35 +40,58 @@ class MonthAdapter(
         calendar.time = startDate.time
         calendar.add(Calendar.MONTH, position)
 
-        holder.bind(calendar, onDateSelected)
+        holder.bind(calendar, selectedDate, todayDate) { date ->
+            // Сбросить подсветку текущей даты, если она была подсвечена
+            val oldSelectedDate = selectedDate?.clone() as? Calendar
+
+            selectedDate = Calendar.getInstance().apply { time = date }
+
+            // Обновляем только те элементы, которые изменились
+            oldSelectedDate?.let { notifyItemChanged(getMonthPosition(it)) }
+            notifyItemChanged(getMonthPosition(selectedDate!!))
+
+            onDateSelected(date)
+        }
     }
 
     override fun getItemCount(): Int = monthsToShow
 
+    private fun getMonthPosition(calendar: Calendar): Int {
+        val diffYear = calendar.get(Calendar.YEAR) - startDate.get(Calendar.YEAR)
+        val diffMonth = calendar.get(Calendar.MONTH) - startDate.get(Calendar.MONTH)
+        return diffYear * 12 + diffMonth
+    }
+
     class MonthViewHolder(private val binding: ItemMonthBinding) : RecyclerView.ViewHolder(binding.root) {
 
-        fun bind(calendar: Calendar, onDateSelected: (Date) -> Unit) {
-            val monthFormat = SimpleDateFormat("MMMM yyyy", Locale.getDefault())
-            binding.tvMonthTitle.text = monthFormat.format(calendar.time)
+        fun bind(
+            calendar: Calendar,
+            selectedDate: Calendar?,
+            todayDate: Calendar,
+            onDateSelected: (Date) -> Unit
+        ) {
+            val formatter = DateTimeFormatter.ofPattern("LLLL", Locale("ru"))
+            val month = LocalDate.of(calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH) + 1, 1)
+                .format(formatter)
+                .replaceFirstChar { it.uppercaseChar() }
 
-            // Очистка сетки перед заполнением
+            binding.tvMonthTitle.text = month
             binding.gridDays.removeAllViews()
 
-            // Установка дней недели
             val daysInMonth = calendar.getActualMaximum(Calendar.DAY_OF_MONTH)
             calendar.set(Calendar.DAY_OF_MONTH, 1)
             val firstDayOfWeek = calendar.get(Calendar.DAY_OF_WEEK) - 2
 
-            // Добавление пустых ячеек для выравнивания
             for (i in 0 until firstDayOfWeek) {
                 binding.gridDays.addView(createEmptyDay())
             }
 
-            // Добавление дней месяца
             for (day in 1..daysInMonth) {
-                val dayView = createDayView(day, calendar) { selectedDay ->
-                    calendar.set(Calendar.DAY_OF_MONTH, selectedDay)
-                    onDateSelected(calendar.time) // Возврат выбранной даты
+                val dayView = createDayView(day, calendar, selectedDate, todayDate) { selectedDay ->
+                    val date = Calendar.getInstance().apply {
+                        set(calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), selectedDay)
+                    }.time
+                    onDateSelected(date)
                 }
                 binding.gridDays.addView(dayView)
             }
@@ -74,9 +107,19 @@ class MonthAdapter(
             }
         }
 
-        private fun createDayView(day: Int, calendar: Calendar, onClick: (Int) -> Unit): TextView {
-            val currentDay = Calendar.getInstance()
-            return TextView(binding.root.context).apply {
+        private fun createDayView(
+            day: Int,
+            calendar: Calendar,
+            selectedDate: Calendar?,
+            todayDate: Calendar,
+            onClick: (Int) -> Unit
+        ): TextView {
+            val context = binding.root.context
+            val date = Calendar.getInstance().apply {
+                set(calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), day)
+            }
+
+            return TextView(context).apply {
                 text = day.toString()
                 textSize = 16f
                 gravity = android.view.Gravity.CENTER
@@ -87,20 +130,39 @@ class MonthAdapter(
                 }
                 setPadding(8, 8, 8, 8)
 
-                // Делаем некликабельными даты до сегодняшнего дня
-                val isPastDate = calendar.get(Calendar.YEAR) < currentDay.get(Calendar.YEAR) ||
-                        (calendar.get(Calendar.YEAR) == currentDay.get(Calendar.YEAR) &&
-                                calendar.get(Calendar.MONTH) == currentDay.get(Calendar.MONTH) &&
-                                day < currentDay.get(Calendar.DAY_OF_MONTH))
-
+                val isPastDate = date.before(todayDate)
                 isEnabled = !isPastDate
                 alpha = if (isPastDate) 0.4f else 1f
 
                 if (!isPastDate) {
                     setOnClickListener { onClick(day) }
                 }
+
+                // Подсветка текущей даты
+                if (date.get(Calendar.YEAR) == todayDate.get(Calendar.YEAR) &&
+                    date.get(Calendar.MONTH) == todayDate.get(Calendar.MONTH) &&
+                    date.get(Calendar.DAY_OF_MONTH) == todayDate.get(Calendar.DAY_OF_MONTH)
+                ) {
+                    // Сбрасываем фон, если выбрана другая дата
+                    if ((selectedDate == null && date != selectedDate) || date == selectedDate) {
+                        setBackgroundColor(ContextCompat.getColor(context, R.color.color_1))
+                        setTextColor(Color.BLACK)
+                    } else {
+                        setBackgroundColor(Color.TRANSPARENT)
+                    }
+                }
+                // Подсветка выбранной даты
+                else if (selectedDate != null &&
+                    date.get(Calendar.YEAR) == selectedDate.get(Calendar.YEAR) &&
+                    date.get(Calendar.MONTH) == selectedDate.get(Calendar.MONTH) &&
+                    date.get(Calendar.DAY_OF_MONTH) == selectedDate.get(Calendar.DAY_OF_MONTH)
+                ) {
+                    setBackgroundColor(ContextCompat.getColor(context, R.color.color_1))
+                    setTextColor(Color.BLACK)
+                } else {
+                    setBackgroundColor(Color.TRANSPARENT) // Сбрасываем фон, если дата не выбрана
+                }
             }
         }
     }
 }
-

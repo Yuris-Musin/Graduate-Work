@@ -7,13 +7,13 @@
         android:title="@string/search"
         app:showAsAction="withText" />
     <item
-        android:id="@+id/account"
-        android:icon="@drawable/baseline_account_circle_24"
-        android:title="@string/account"
-        app:showAsAction="withText" />
-    <item
         android:id="@+id/about"
         android:icon="@drawable/baseline_info_24"
         android:title="@string/about"
+        app:showAsAction="withText" />
+    <item
+        android:id="@+id/account"
+        android:icon="@drawable/baseline_settings_24"
+        android:title="@string/settings"
         app:showAsAction="withText" />
 </menu>

@@ -34,13 +34,13 @@ class MainActivity : AppCompatActivity() {
                     true
                 }
 
-                R.id.about -> {
-                    navController.navigate(R.id.aboutFragment)
+                R.id.account -> {
+                    navController.navigate(R.id.accountFragment)
                     true
                 }
 
-                R.id.account -> {
-                    navController.navigate(R.id.accountFragment)
+                R.id.about -> {
+                    navController.navigate(R.id.aboutFragment)
                     true
                 }
 
