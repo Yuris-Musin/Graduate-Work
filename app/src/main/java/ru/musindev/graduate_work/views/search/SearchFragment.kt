@@ -162,46 +162,21 @@ class SearchFragment : Fragment() {
         }
     }
 
-//    private fun fetchSuggestions(query: String, callback: (List<String>) -> Unit) {
-//        performRequest("https://suggests.rasp.yandex.net/all_suggests?format=old&part=$query") { responseData ->
-//            responseData?.let {
-//                val jsonArray = JSONArray(it).getJSONArray(1)
-//                val firstItem = jsonArray.optJSONArray(0)
-//                val suggestion = firstItem?.getString(1)
-//                callback(if (suggestion != null) listOf(suggestion) else emptyList())
-//            } ?: callback(emptyList())
-//        }
-//    }
-private fun fetchSuggestions(query: String, callback: (List<String>) -> Unit) {
-    performRequest("https://suggests.rasp.yandex.net/all_suggests?format=old&part=$query") { responseData ->
-        responseData?.let {
-            val jsonArray = JSONArray(it).getJSONArray(1)
-            val suggestions = mutableSetOf<String>()
-            for (i in 0 until jsonArray.length()) {
-                val suggestion = jsonArray.optJSONArray(i)?.getString(1)?.split("[ ,]".toRegex())?.firstOrNull()
-                suggestion?.let { suggestions.add(it) }
-            }
-            callback(suggestions.toList())
-        } ?: callback(emptyList())
+    private fun fetchSuggestions(query: String, callback: (List<String>) -> Unit) {
+        performRequest("https://suggests.rasp.yandex.net/all_suggests?format=old&part=$query") { responseData ->
+            responseData?.let {
+                val jsonArray = JSONArray(it).getJSONArray(1)
+                val suggestions = mutableSetOf<String>()
+                for (i in 0 until jsonArray.length()) {
+                    val suggestion =
+                        jsonArray.optJSONArray(i)?.getString(1)?.split("[ ,]".toRegex())
+                            ?.firstOrNull()
+                    suggestion?.let { suggestions.add(it) }
+                }
+                callback(suggestions.toList())
+            } ?: callback(emptyList())
+        }
     }
-}
-
-//    private fun performRequest(url: String, callback: (String?) -> Unit) {
-//        CoroutineScope(Dispatchers.IO).launch {
-//            try {
-//                val request = Request.Builder().url(url).build()
-//                client.newCall(request).execute().use { response ->
-//                    if (response.isSuccessful) {
-//                        callback(response.body?.string())
-//                    } else {
-//                        callback(null)
-//                    }
-//                }
-//            } catch (e: Exception) {
-//                callback(null)
-//            }
-//        }
-//    }
 
     private fun performRequest(url: String, callback: (String?) -> Unit) {
         CoroutineScope(Dispatchers.IO).launch {
