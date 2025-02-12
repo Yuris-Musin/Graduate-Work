@@ -14,8 +14,7 @@
         android:layout_marginStart="10dp"
         android:layout_marginTop="10dp"
         android:textSize="12sp"
-        android:text="10 февраля"
-        android:textColor="@color/shadow"
+        android:textColor="@color/textColor"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"/>
 
@@ -25,8 +24,7 @@
         android:layout_height="wrap_content"
         android:textSize="28sp"
         android:fontFamily="@font/pt_sans_bold"
-        android:text="17:00"
-        android:textColor="@color/color_1"
+        android:textColor="@color/colorAccent"
         app:layout_constraintStart_toStartOf="@id/date_departure"
         app:layout_constraintTop_toBottomOf="@id/date_departure"/>
 
@@ -37,8 +35,7 @@
         android:layout_marginEnd="10dp"
         android:layout_marginTop="10dp"
         android:textSize="12sp"
-        android:text="10 февраля"
-        android:textColor="@color/shadow"
+        android:textColor="@color/textColor"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="@id/tvArrival"/>
 
@@ -47,10 +44,9 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="10dp"
-        android:textColor="@color/color_1"
+        android:textColor="@color/colorAccent"
         android:textSize="28sp"
         android:fontFamily="@font/pt_sans_bold"
-        android:text="21:00"
         app:layout_constraintTop_toTopOf="@id/tv_departure"
         app:layout_constraintEnd_toEndOf="parent"/>
 
@@ -60,9 +56,8 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
         android:layout_marginBottom="12dp"
-        android:textColor="@color/shadow"
+        android:textColor="@color/textColor"
         android:textSize="18sp"
-        android:text="Маршрут: Москва - Санкт-Петербург"
         app:layout_constraintStart_toStartOf="@id/tv_departure"
         app:layout_constraintTop_toBottomOf="@id/tv_departure"
         app:layout_constraintBottom_toBottomOf="parent"/>

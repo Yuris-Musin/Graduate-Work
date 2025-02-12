@@ -145,7 +145,7 @@ class MonthAdapter(
                 ) {
                     // Сбрасываем фон, если выбрана другая дата
                     if ((selectedDate == null && date != selectedDate) || date == selectedDate) {
-                        setBackgroundColor(ContextCompat.getColor(context, R.color.color_1))
+                        setBackgroundColor(ContextCompat.getColor(context, R.color.colorAccent))
                         setTextColor(Color.BLACK)
                     } else {
                         setBackgroundColor(Color.TRANSPARENT)
@@ -157,7 +157,7 @@ class MonthAdapter(
                     date.get(Calendar.MONTH) == selectedDate.get(Calendar.MONTH) &&
                     date.get(Calendar.DAY_OF_MONTH) == selectedDate.get(Calendar.DAY_OF_MONTH)
                 ) {
-                    setBackgroundColor(ContextCompat.getColor(context, R.color.color_1))
+                    setBackgroundColor(ContextCompat.getColor(context, R.color.colorAccent))
                     setTextColor(Color.BLACK)
                 } else {
                     setBackgroundColor(Color.TRANSPARENT) // Сбрасываем фон, если дата не выбрана

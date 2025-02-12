@@ -1,5 +1,7 @@
 package ru.musindev.graduate_work.views
 
+import android.content.Context
+import android.content.SharedPreferences
 import android.content.pm.ActivityInfo
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
@@ -12,6 +14,7 @@ import ru.musindev.graduate_work.databinding.ActivityMainBinding
 class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
+    private lateinit var sharedPreferences: SharedPreferences
 
     private val navController by lazy {
         NavHostFragment.findNavController(supportFragmentManager.findFragmentById(R.id.fragment_placeholder) as NavHostFragment)
@@ -20,9 +23,21 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED
-        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+        // Инициализация SharedPreferences
+        sharedPreferences = getSharedPreferences("AppSettings", Context.MODE_PRIVATE)
+
+        // Загрузка сохраненного состояния темы
+        val isDarkTheme = sharedPreferences.getBoolean("isDarkTheme", false)
+
+        // Применение темы перед установкой макета
+        if (isDarkTheme) {
+            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
+        } else {
+            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
+        }
 
         binding.bottomNavigation.setupWithNavController(navController)
 
@@ -34,8 +49,8 @@ class MainActivity : AppCompatActivity() {
                     true
                 }
 
-                R.id.account -> {
-                    navController.navigate(R.id.accountFragment)
+                R.id.settings -> {
+                    navController.navigate(R.id.settingsFragment)
                     true
                 }
 
