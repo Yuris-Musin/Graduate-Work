@@ -1,11 +1,13 @@
-package ru.musindev.graduate_work.di.db
+package ru.musindev.graduate_work.data.local.db
 
 import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
+import ru.musindev.graduate_work.data.local.request.SearchRequest
+import ru.musindev.graduate_work.data.local.dao.SearchRequestDao
 
-@Database(entities = [SearchRequest::class], version = 1, exportSchema = false)
+@Database(entities = [SearchRequest::class], version = 2, exportSchema = false)
 abstract class AppDatabase : RoomDatabase() {
 
     abstract fun searchRequestDao(): SearchRequestDao

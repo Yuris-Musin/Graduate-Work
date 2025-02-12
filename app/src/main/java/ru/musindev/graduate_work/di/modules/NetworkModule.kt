@@ -4,7 +4,7 @@ import dagger.Module
 import dagger.Provides
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
-import ru.musindev.graduate_work.di.api.YandexRaspApi
+import ru.musindev.graduate_work.data.api.YandexRaspApi
 import javax.inject.Singleton
 
 @Module

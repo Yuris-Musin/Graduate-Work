@@ -1,6 +1,7 @@
-package ru.musindev.graduate_work.di.db
+package ru.musindev.graduate_work.data.local.dao
 
 import androidx.room.*
+import ru.musindev.graduate_work.data.local.request.SearchRequest
 
 @Dao
 interface SearchRequestDao {

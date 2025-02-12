@@ -4,13 +4,15 @@ import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
-import ru.musindev.graduate_work.di.api.YandexRaspApi
-import ru.musindev.graduate_work.di.api.models.ScheduleResponse
-import ru.musindev.graduate_work.di.api.models.Segment
+import ru.musindev.graduate_work.data.api.YandexRaspApi
+import ru.musindev.graduate_work.domain.models.ScheduleResponse
+import ru.musindev.graduate_work.domain.models.Segment
 import javax.inject.Inject
+import javax.inject.Provider
 
 class SearchViewModel @Inject constructor(
     private val yandexRaspApi: YandexRaspApi
@@ -40,3 +42,4 @@ class SearchViewModel @Inject constructor(
         })
     }
 }
+

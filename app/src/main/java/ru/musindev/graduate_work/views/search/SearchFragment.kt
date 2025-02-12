@@ -1,9 +1,7 @@
 package ru.musindev.graduate_work.views.search
 
-import android.app.DatePickerDialog
 import android.content.Context
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -12,6 +10,8 @@ import android.widget.AutoCompleteTextView
 import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import dagger.android.support.AndroidSupportInjection
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -21,11 +21,11 @@ import okhttp3.Request
 import org.json.JSONArray
 import ru.musindev.graduate_work.API
 import ru.musindev.graduate_work.databinding.FragmentSearchBinding
-import ru.musindev.graduate_work.di.db.AppDatabase
-import ru.musindev.graduate_work.di.db.SearchRequest
+import ru.musindev.graduate_work.data.local.db.AppDatabase
+import ru.musindev.graduate_work.data.local.request.SearchRequest
+import ru.musindev.graduate_work.views.adapters.ScheduleAdapter
+import ru.musindev.graduate_work.views.calendar.CalendarDialogFragment
 import java.text.SimpleDateFormat
-import java.util.Calendar
-import java.util.Date
 import java.util.Locale
 import javax.inject.Inject
 
@@ -40,6 +40,8 @@ class SearchFragment : Fragment() {
     lateinit var viewModelFactory: ViewModelProvider.Factory
     private lateinit var database: AppDatabase
     private lateinit var viewModel: SearchViewModel
+    private lateinit var scheduleAdapter: ScheduleAdapter
+    private lateinit var recyclerView: RecyclerView
 
     override fun onAttach(context: Context) {
         AndroidSupportInjection.inject(this)
@@ -74,6 +76,12 @@ class SearchFragment : Fragment() {
         observeViewModel()
 
         binding.btnSearch.setOnClickListener { onSearchClick() }
+
+        // Инициализация RecyclerView
+        recyclerView = binding.rcSchedule
+        scheduleAdapter = ScheduleAdapter()
+        recyclerView.adapter = scheduleAdapter
+        recyclerView.layoutManager = LinearLayoutManager(requireContext())
     }
 
     private fun setupAutoComplete(field: AutoCompleteTextView, adapter: ArrayAdapter<String>) {
@@ -92,31 +100,21 @@ class SearchFragment : Fragment() {
     }
 
     private fun showDatePicker() {
-        val calendar = Calendar.getInstance()
-        DatePickerDialog(
-            requireContext(),
-            { _, year, month, day ->
-                binding.btnDate.text = "$year-${month + 1}-$day"
-            },
-            calendar.get(Calendar.YEAR),
-            calendar.get(Calendar.MONTH),
-            calendar.get(Calendar.DAY_OF_MONTH)
-        ).show()
+
+        val dialog = CalendarDialogFragment { selectedDate ->
+            val dateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
+            binding.btnDate.text = dateFormat.format(selectedDate)
+        }
+        dialog.show(parentFragmentManager, "CalendarDialog")
     }
 
     private fun observeViewModel() {
         viewModel.schedule.observe(viewLifecycleOwner) { segments ->
-            binding.tvResult.text = if (segments.isEmpty()) {
-                "Ничего не найдено"
+            if (segments.isEmpty()) {
+                binding.tvResult.text = "Ничего не найдено"
             } else {
-                segments.joinToString("\n") { segment ->
-                    """
-                    Отправление: ${segment.departure}
-                    Прибытие: ${segment.arrival}
-                    Маршрут: ${segment.thread.title}
-                    
-                    """.trimIndent()
-                }
+                scheduleAdapter.setSegments(segments) // Используйте адаптер для отображения данных
+                binding.tvResult.text = ""
             }
         }
 
@@ -135,23 +133,18 @@ class SearchFragment : Fragment() {
     private fun onSearchClick() {
         val cityFrom = binding.etFrom.text.toString().trim()
         val cityTo = binding.etTo.text.toString().trim()
+        val selectedDate = binding.btnDate.text.toString()
 
         if (cityFrom.isEmpty() || cityTo.isEmpty()) {
             binding.tvResult.text = "Введите названия станций"
             return
         }
 
-        val selectedDate = if (binding.btnDate.text.isEmpty()) {
-            SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(Date())
-        } else {
-            binding.btnDate.text.toString()
-        }
-
         fetchCityCode(cityFrom) { fromCode ->
             fetchCityCode(cityTo) { toCode ->
                 if (fromCode != null && toCode != null) {
                     viewModel.fetchSchedule(apiKey, fromCode, toCode, selectedDate)
-                    cacheRequest(cityFrom, cityTo, selectedDate)
+                    cacheRequest(cityFrom, cityTo)
                 } else {
                     binding.tvResult.text = "Код города не найден"
                 }
@@ -197,10 +190,10 @@ class SearchFragment : Fragment() {
         }
     }
 
-    private fun cacheRequest(cityFrom: String, cityTo: String, date: String) {
+    private fun cacheRequest(cityFrom: String, cityTo: String) {
         CoroutineScope(Dispatchers.IO).launch {
             val dao = database.searchRequestDao()
-            dao.insertRequest(SearchRequest(cityFrom = cityFrom, cityTo = cityTo, date = date))
+            dao.insertRequest(SearchRequest(cityFrom = cityFrom, cityTo = cityTo))
             dao.deleteOldRequests()
         }
     }
@@ -211,7 +204,7 @@ class SearchFragment : Fragment() {
             requireActivity().runOnUiThread {
                 // Отобразите результаты в UI
                 val resultText = lastRequests.joinToString("\n") {
-                    "Из: ${it.cityFrom}, В: ${it.cityTo}, Дата: ${it.date}"
+                    "${it.cityFrom}  —  ${it.cityTo}"
                 }
                 binding.tvLastRequests.text = resultText
             }

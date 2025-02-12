@@ -8,81 +8,94 @@
 
     <ImageView
         android:id="@+id/ic_from"
-        android:layout_width="50dp"
-        android:layout_height="50dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_marginStart="20dp"
-        android:layout_marginTop="30dp"
         android:src="@drawable/baseline_location_on_24"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"/>
+        app:layout_constraintTop_toTopOf="@id/et_from"
+        app:layout_constraintEnd_toStartOf="@id/et_from"
+        app:layout_constraintBottom_toBottomOf="@id/et_from"/>
 
     <AutoCompleteTextView
         android:id="@+id/et_from"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
         android:layout_marginEnd="60dp"
         android:hint="@string/from"
         android:inputType="text"
         android:completionThreshold="1"
         app:layout_constraintStart_toEndOf="@id/ic_from"
-        app:layout_constraintBottom_toBottomOf="@id/ic_from"
+        app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintEnd_toEndOf="parent"/>
 
     <ImageView
         android:id="@+id/ic_to"
-        android:layout_width="50dp"
-        android:layout_height="50dp"
-        android:layout_marginTop="10dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:src="@drawable/baseline_location_on_24"
         app:layout_constraintStart_toStartOf="@id/ic_from"
-        app:layout_constraintTop_toBottomOf="@id/ic_from" />
+        app:layout_constraintTop_toTopOf="@id/et_to"
+        app:layout_constraintBottom_toBottomOf="@id/et_to"
+        />
 
     <AutoCompleteTextView
         android:id="@+id/et_to"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
         android:hint="@string/to"
         android:inputType="text"
         android:completionThreshold="1"
-        app:layout_constraintStart_toEndOf="@id/ic_to"
-        app:layout_constraintBottom_toBottomOf="@id/ic_to"
+        app:layout_constraintStart_toStartOf="@id/et_from"
+        app:layout_constraintTop_toBottomOf="@id/et_from"
         app:layout_constraintEnd_toEndOf="@id/et_from"/>
 
     <ImageView
         android:id="@+id/ic_reverse"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_marginStart="10dp"
         android:layout_marginEnd="10dp"
         android:layout_marginTop="25dp"
         android:layout_marginBottom="25dp"
-        android:rotation="90"
-        android:src="@drawable/baseline_sync_alt_24"
+        android:src="@drawable/baseline_import_export_24"
         app:layout_constraintStart_toEndOf="@id/et_from"
         app:layout_constraintTop_toTopOf="@id/et_from"
         app:layout_constraintBottom_toBottomOf="@id/et_to"
         app:layout_constraintEnd_toEndOf="parent"/>
 
-    <androidx.appcompat.widget.AppCompatButton
+    <ImageView
+        android:id="@+id/ic_calendar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/baseline_calendar_month_24"
+        app:layout_constraintStart_toStartOf="@id/ic_from"
+        app:layout_constraintTop_toTopOf="@id/btn_date"
+        app:layout_constraintEnd_toStartOf="@id/btn_date"
+        app:layout_constraintBottom_toBottomOf="@id/btn_date"/>
+
+    <TextView
         android:id="@+id/btn_date"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="30dp"
+        android:layout_marginTop="10dp"
         android:layout_marginEnd="20dp"
-        android:background="@color/blue"
-        android:textColor="@color/white"
+        android:padding="10dp"
+        android:textColor="@color/black"
         android:textSize="18sp"
         android:text="@string/select_date"
-        app:layout_constraintStart_toStartOf="@id/ic_from"
-        app:layout_constraintTop_toBottomOf="@id/ic_to"
+        app:layout_constraintStart_toStartOf="@id/et_from"
+        app:layout_constraintTop_toBottomOf="@id/et_to"
         app:layout_constraintEnd_toEndOf="parent"/>
 
     <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/btn_search"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
-        android:background="@color/blue"
+        android:layout_marginTop="15dp"
+        android:background="@color/orange"
         android:textColor="@color/white"
         android:textSize="18sp"
         android:text="@string/search"
@@ -95,27 +108,35 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
+        android:textColor="@color/black"
+        android:lineSpacingExtra="5sp"
+        android:textSize="16sp"
         app:layout_constraintStart_toStartOf="@id/btn_search"
         app:layout_constraintTop_toBottomOf="@id/btn_search"
         app:layout_constraintEnd_toEndOf="@id/btn_search"/>
 
-    <ScrollView
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rc_schedule"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:layout_marginTop="10dp"
-        android:layout_marginBottom="20dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="10dp"
         app:layout_constraintStart_toStartOf="@id/btn_search"
         app:layout_constraintTop_toBottomOf="@id/tv_last_requests"
         app:layout_constraintEnd_toEndOf="@id/btn_search"
-        app:layout_constraintBottom_toBottomOf="parent">
+        app:layout_constraintBottom_toBottomOf="parent"
+        tools:listitem="@layout/item_schedule"/>
 
-        <TextView
-            android:id="@+id/tv_result"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:textSize="16sp"
-            android:textColor="@color/black"/>
-    </ScrollView>
+    <TextView
+        android:id="@+id/tv_result"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:textSize="16sp"
+        android:textColor="@color/black"
+        app:layout_constraintStart_toStartOf="@id/tv_last_requests"
+        app:layout_constraintTop_toBottomOf="@id/tv_last_requests"
+        app:layout_constraintEnd_toEndOf="@id/tv_last_requests"/>
 
 
 

@@ -1,4 +1,4 @@
-package ru.musindev.graduate_work.di.db
+package ru.musindev.graduate_work.data.local.request
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
@@ -7,6 +7,5 @@ import androidx.room.PrimaryKey
 data class SearchRequest(
     @PrimaryKey(autoGenerate = true) val id: Int = 0,
     val cityFrom: String,
-    val cityTo: String,
-    val date: String
+    val cityTo: String
 )
